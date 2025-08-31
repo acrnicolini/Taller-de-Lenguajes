@@ -1,4 +1,9 @@
 import random
+import sys    #para usar exit a partir de linea 38
+
+# Se crea variable para contabilizar puntaje
+puntaje = 0.0
+
 # Preguntas para el juego
 questions = [
     "¿Qué función se usa para obtener la longitud de una cadena en Python?",
@@ -23,28 +28,44 @@ answers = [
 #Índice de la respuesta correcta para cada pregunta, el el mismo orden que las preguntas
 correct_answers_index = [1, 2, 0, 3, 1]
 
-# El usuario deberá contestar 3 preguntas
-for _ in range(3):
-    # Se selecciona una pregunta aleatoria
-    question_index = random.randint(0, len(questions) - 1)
+# Se combina las listas en una
+all_questions = list(zip(questions, answers, correct_answers_index))
 
+
+# Se elegien 3 prguntas al azar
+questions_to_ask = random.sample(all_questions, k=3)
+
+# El usuario deberá contestar 3 preguntas
+for questions, answers, correct_answers_index in questions_to_ask:
     # Se muestra la pregunta y las respuestas posibles
-    print(questions[question_index])
-    for i, answer in enumerate(answers[question_index]):
+    print ("\n"+ questions)
+    
+    for i, answer in enumerate(answers):
         print(f"{i + 1}. {answer}")
 
 # El usuario tiene 2 intentos para responder correctamente
-for intento in range(2):
-    user_answer = int(input("Respuesta: ")) - 1
-    # Se verifica si la respuesta es correcta
-    if user_answer == correct_answers_index[question_index]:
-        print("¡Correcto!")
-        break
-else:
-    #Si el usuario no responde correctamente después de 2 intentos,
-    # se muestra la respuesta correcta
-    print("Incorrecto. La respuesta correcta es:")
-    print(answers[question_index][correct_answers_index[question_index]])
+    for intento in range(2):
+        try:
+            user_answer = int(input("Respuesta: ")) - 1
+        except ValueError:
+            print ("Respuesta invalida")
+            sys.exit(1)
+        # Se verifica que el numero este dentro del rango
+        if not 0 <= user_answer < len(answers):
+            print("Respuesta no válida")
+            sys.exit(1)
+            # Se verifica si la respuesta es correcta
+        if user_answer == correct_answers_index:
+            print("¡Correcto!")
+            puntaje += 1
+            break
+    else:
+        #Si el usuario no responde correctamente después de 2 intentos,
+        # se muestra la respuesta correcta
+        print("Incorrecto. La respuesta correcta es:")
+        print(answers[correct_answers_index])
+        puntaje -= 0.5
 
+print (f'El puntaje obtenido ha sido de : {puntaje} puntos')
 # Se imprime un blanco al final de la pregunta
 print()
